@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chatbot</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body class="dark">
+  <div class="chat-container">
+    <div id="chat-box" class="chat-box"></div>
+
+    <!-- Input -->
+    <div class="input-area">
+      <input type="text" id="user-input" placeholder="Type your message here..." autocomplete="off">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <!-- Controls -->
+    <div class="control-buttons">
+      <button id="voice-btn" onclick="toggleTTS()">🔇 Voice: OFF</button>
+      <button id="gender-btn" onclick="toggleGender()">♀ Female</button>
+      <button id="theme-btn" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById('chat-box');
+    const userInput = document.getElementById('user-input');
+
+    let ttsEnabled = false;
+    let voiceGender = "female";
+    let isDark = true;
+
+    function appendMessage(sender, message) {
+      const msg = document.createElement('div');
+      msg.className = 'chat-message ' + sender;
+
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.textContent = message;
+
+      msg.appendChild(bubble);
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function sendMessage() {
+      const text = userInput.value.trim();
+      if (text === "") return;
+
+      appendMessage('user', text);
+      userInput.value = '';
+
+      fetch('/get_response', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          message: text,
+          tts: false,  // frontend handles speech now
+          gender: voiceGender
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        appendMessage('bot', data.response);
+
+        // 🔊 Speak after adding to chat
+        if (ttsEnabled) {
+          setTimeout(() => {
+            const utterance = new SpeechSynthesisUtterance(data.response);
+            const voices = speechSynthesis.getVoices();
+            const filtered = voices.filter(v =>
+              voiceGender === "female"
+                ? v.name.toLowerCase().includes("female") || v.name.toLowerCase().includes("woman")
+                : v.name.toLowerCase().includes("male") || v.name.toLowerCase().includes("man")
+            );
+            utterance.voice = filtered[0] || voices[0];
+            speechSynthesis.speak(utterance);
+          }, 200);
+        }
+      })
+      .catch(() => appendMessage('bot', "⚠️ Error: Server is not responding."));
+    }
+
+    function toggleTTS() {
+      ttsEnabled = !ttsEnabled;
+      const icon = ttsEnabled ? "🔊" : "🔇";
+      const status = ttsEnabled ? "ON" : "OFF";
+      document.getElementById("voice-btn").innerText = `${icon} Voice: ${status}`;
+    }
+
+    function toggleGender() {
+      voiceGender = voiceGender === "female" ? "male" : "female";
+      document.getElementById("gender-btn").innerText = voiceGender === "female" ? "♀ Female" : "♂ Male";
+    }
+
+    function toggleTheme() {
+      isDark = !isDark;
+      document.body.className = isDark ? "dark" : "light";
+      document.getElementById("theme-btn").innerText = isDark ? "🌙" : "☀️";
+    }
+
+    window.onload = () => {
+      // Force load voices
+      speechSynthesis.onvoiceschanged = () => {};
+      appendMessage("bot", "Hello! I'm your chatbot. How can I assist you today?");
+    };
+
+    userInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') sendMessage();
+    });
+  </script>
+</body>
+</html>

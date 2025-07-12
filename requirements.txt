@@ -1,0 +1,9 @@
+Flask
+requests
+wikipedia
+pyaudio ; platform_system == "Windows"
+gTTS
+beautifulsoup4
+lxml
+gunicorn
+deep-translator

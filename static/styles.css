@@ -1,0 +1,171 @@
+/* Base layout */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.chat-container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+}
+
+.chat-box {
+  height: 430px;
+  overflow-y: auto;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  flex: 1;
+  padding: 15px;
+  display: flex;
+    flex-direction: column;
+}
+
+/* Input area */
+.input-area {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.input-area input {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+}
+
+.input-area button {
+  padding: 10px 15px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Controls */
+.control-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.control-buttons button {
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Messages */
+.chat-message {
+    display: inline-block;
+    margin: 8px 0;
+    padding: 10px 14px;
+    border-radius: 12px;
+    max-width: 80%;
+    word-wrap: break-word;
+    clear: both;
+}
+
+.chat-message.user {
+    background-color: #6aaf6a;
+    color: white;
+    align-self: flex-end;
+    float: right;
+    border-bottom-right-radius: 0;
+}
+
+.chat-message.bot {
+    background-color: #3a3a3a;
+    color: white;
+    align-self: flex-start;
+    float: left;
+    border-bottom-left-radius: 0;
+}
+
+/* Dark Theme */
+body.dark {
+  background-color: #2e2e2e;
+  color: #fff;
+}
+
+body.dark .chat-box {
+  background-color: #444;
+  color: #fff;
+}
+
+body.dark .input-area input {
+  background-color: #555;
+  color: #fff;
+}
+
+body.dark .input-area button,
+body.dark .control-buttons button {
+  background-color: #666;
+  color: white;
+}
+
+/* Light Theme */
+body.light {
+  background-color: #f7f7f7;
+  color: #000;
+}
+
+body.light .chat-box {
+  background-color: #fff;
+  color: #000;
+}
+
+body.light .input-area input {
+  background-color: #fff;
+  color: #000;
+}
+
+body.light .input-area button,
+body.light .control-buttons button {
+  background-color: #e0e0e0;
+  color: black;
+}
+
+/* Ensure placeholder text is visible in dark mode */
+body.dark input::placeholder {
+  color: #cccccc;
+}
+
+body.light input::placeholder {
+  color: #777777;
+}
+
+/* Fix chat message text colors */
+body.dark .chat-message.user,
+body.dark .chat-message.bot {
+  color: #fff;
+}
+
+body.light .chat-message.user,
+body.light .chat-message.bot {
+  color: #000;
+}
+
+/* Optional: change background for chat bubbles */
+body.dark .chat-message.user {
+  background-color: #6aaf6a;
+}
+body.dark .chat-message.bot {
+  background-color: #3a3a3a;
+}
+body.light .chat-message.user {
+  background-color: #d1e7dd;
+}
+body.light .chat-message.bot {
+  background-color: #f1f0f0;
+}
+
+/* Ensure caret (cursor) is visible in input */
+body.dark input {
+  caret-color: white;
+}
